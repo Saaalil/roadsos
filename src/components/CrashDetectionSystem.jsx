@@ -234,67 +234,69 @@ function CrashDetectionSystem({ location, activateSOS }) {
         FLIPPED: { color: "#C0392B", icon: "🔃", label: "Flipped!" },
     };
     const cond = conditionConfig[phoneCondition] || conditionConfig.STABLE;
+    const batteryLabel = battery == null ? "--" : `${battery}%`;
+    const batteryColor = battery == null ? "var(--text)" : battery < 20 ? "#c0392b" : "#1e8449";
 
     return (
-        <div style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        <div className="sensor-root">
 
             {/* ── Gyroscope + Speed Monitor Card ── */}
-            <div style={{
-                background: "white", border: "0.5px solid #E0DDD6",
-                borderRadius: "10px", padding: "14px", marginBottom: "12px"
-            }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                    <span style={{ fontSize: "12px", fontWeight: 600, color: "#6B6B6B", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                        🌀 Live Sensors
-                    </span>
-                    <span style={{ background: cond.color, color: "white", padding: "3px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600 }}>
-                        {cond.icon} {cond.label}
-                    </span>
-                </div>
-
-                {/* Speed + Battery */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", marginBottom: "10px" }}>
-                    <div style={{ background: "#F7F6F3", borderRadius: "8px", padding: "10px", textAlign: "center" }}>
-                        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "28px", color: "#1A1A1A", lineHeight: 1 }}>{speed}</div>
-                        <div style={{ fontSize: "10px", color: "#6B6B6B", marginTop: "2px" }}>km/h — GPS Speed</div>
+            <div className="panel-card sensor-card">
+                <div className="sensor-header">
+                    <div className="sensor-title">
+                        <span className="sensor-title-icon">🌀</span>
+                        Live Sensors
                     </div>
-                    <div style={{ background: "#F7F6F3", borderRadius: "8px", padding: "10px", textAlign: "center" }}>
-                        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "28px", color: battery < 20 ? "#C0392B" : "#1E8449", lineHeight: 1 }}>
-                            {battery ?? "—"}%
-                        </div>
-                        <div style={{ fontSize: "10px", color: "#6B6B6B", marginTop: "2px" }}>🔋 Battery</div>
+                    <div className="sensor-status" style={{ background: cond.color }}>
+                        <span className="sensor-status-icon">{cond.icon}</span>
+                        {cond.label}
                     </div>
                 </div>
 
-                {/* Gyroscope readings */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "6px" }}>
+                <div className="sensor-grid sensor-grid-2">
+                    <div className="sensor-tile">
+                        <div className="sensor-value">{speed}</div>
+                        <div className="sensor-label">km/h</div>
+                        <div className="sensor-sub">GPS Speed</div>
+                    </div>
+                    <div className="sensor-tile">
+                        <div className="sensor-value" style={{ color: batteryColor }}>{batteryLabel}</div>
+                        <div className="sensor-label">Battery</div>
+                        <div className="sensor-sub">Device power</div>
+                    </div>
+                </div>
+
+                <div className="sensor-grid sensor-grid-3">
                     {[
                         { axis: "Alpha (Z)", value: gyro.alpha, desc: "Compass" },
                         { axis: "Beta (X)", value: gyro.beta, desc: "Tilt F/B" },
                         { axis: "Gamma (Y)", value: gyro.gamma, desc: "Tilt L/R" }
                     ].map(r => (
-                        <div key={r.axis} style={{ background: "#F7F6F3", borderRadius: "8px", padding: "8px", textAlign: "center" }}>
-                            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "18px", color: cond.color }}>{r.value}°</div>
-                            <div style={{ fontSize: "9px", fontWeight: 600, color: "#1A1A1A" }}>{r.axis}</div>
-                            <div style={{ fontSize: "9px", color: "#6B6B6B" }}>{r.desc}</div>
+                        <div key={r.axis} className="sensor-tile small">
+                            <div className="sensor-value compact" style={{ color: cond.color }}>{r.value}°</div>
+                            <div className="sensor-label">{r.axis}</div>
+                            <div className="sensor-sub">{r.desc}</div>
                         </div>
                     ))}
                 </div>
 
-                {/* Phone condition checks */}
-                <div style={{ background: "#F7F6F3", borderRadius: "8px", padding: "10px", marginTop: "10px" }}>
-                    <div style={{ fontSize: "11px", fontWeight: 600, color: "#6B6B6B", marginBottom: "6px" }}>📊 Phone Condition</div>
-                    {[
-                        { label: "Screen Intact", ok: phoneCondition !== "THROWN" },
-                        { label: "Sensor Active", ok: true },
-                        { label: "Vehicle Upright", ok: phoneCondition !== "FLIPPED" },
-                        { label: "No Heavy Impact", ok: !["IMPACT", "THROWN"].includes(phoneCondition) },
-                    ].map(item => (
-                        <div key={item.label} style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "3px 0", borderBottom: "0.5px solid #E0DDD6" }}>
-                            <span>{item.label}</span>
-                            <span style={{ color: item.ok ? "#1E8449" : "#C0392B", fontWeight: 600 }}>{item.ok ? "✅ OK" : "❌ Alert"}</span>
-                        </div>
-                    ))}
+                <div className="sensor-condition">
+                    <div className="sensor-condition-title">📊 Phone Condition</div>
+                    <div className="condition-list">
+                        {[
+                            { label: "Screen Intact", ok: phoneCondition !== "THROWN" },
+                            { label: "Sensor Active", ok: true },
+                            { label: "Vehicle Upright", ok: phoneCondition !== "FLIPPED" },
+                            { label: "No Heavy Impact", ok: !["IMPACT", "THROWN"].includes(phoneCondition) },
+                        ].map(item => (
+                            <div key={item.label} className="condition-row">
+                                <span className="condition-label">{item.label}</span>
+                                <span className={`condition-pill ${item.ok ? "ok" : "alert"}`}>
+                                    {item.ok ? "OK" : "ALERT"}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
 

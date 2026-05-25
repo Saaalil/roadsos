@@ -1,5 +1,7 @@
 function NearestHospital({ hospitals, location }) {
-    if (hospitals.length === 0) return <p style={{ color: '#6B6B6B', fontSize: '13px' }}>Searching for hospitals nearby…</p>;
+    if (hospitals.length === 0) {
+        return <div className="panel-card panel-muted">Searching for hospitals nearby...</div>;
+    }
 
     let nearest = hospitals[0];
     let minDistance = Infinity;
@@ -11,18 +13,22 @@ function NearestHospital({ hospitals, location }) {
     const eta = Math.ceil((distanceKm / 40) * 60);
 
     return (
-        <div className="dashboard-card">
-            <p style={{ fontSize: '11px', fontWeight: 600, color: '#6B6B6B', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '8px' }}>🏥 Nearest Hospital</p>
-            <h2 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '20px', marginBottom: '8px' }}>
+        <div className="panel-card">
+            <div className="panel-section-title">Nearest Hospital</div>
+            <div className="panel-title">
                 {nearest.tags?.name || 'Nearest Hospital'}
-            </h2>
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                <span style={{ fontSize: '12px', color: '#6B6B6B' }}>📏 {distanceKm} km</span>
-                <span style={{ fontSize: '12px', color: '#6B6B6B' }}>⏱ {eta} min ETA</span>
             </div>
-            <a href={`https://www.google.com/maps?q=${nearest.lat},${nearest.lon}`} target="_blank" rel="noreferrer">
-                <button style={{ background: '#1E8449', color: 'white', border: 'none', borderRadius: '7px', padding: '9px 14px', cursor: 'pointer', fontSize: '12px', fontWeight: 500, width: '100%' }}>
-                    🧭 Navigate to Hospital
+            <div className="panel-meta">
+                <span>{distanceKm} km</span>
+                <span>{eta} min ETA</span>
+            </div>
+            <a
+                href={`https://www.google.com/maps/search/hospital/@${nearest.lat},${nearest.lon},14z`}
+                target="_blank"
+                rel="noreferrer"
+            >
+                <button className="panel-button" type="button">
+                    Open Nearby Hospitals
                 </button>
             </a>
         </div>

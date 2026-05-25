@@ -12,47 +12,17 @@ function AIRecommendation({
         hospitals[0];
 
     return (
-
-        <div className="dashboard-card">
-
-            <h2>
-                🧠 AI Recommendation
-            </h2>
-
-            <p>
-
-                Recommended Hospital:
-
-            </p>
-
-            <h3>
-
-                {recommended.tags?.name
-                    ||
-                    "Hospital"}
-
-            </h3>
-
-            <p>
-
-                ✓ Closest hospital
-
-            </p>
-
-            <p>
-
-                ✓ Fast emergency access
-
-            </p>
-
-            <p>
-
-                ✓ Immediate assistance available
-
-            </p>
-
+        <div className="panel-card">
+            <div className="panel-section-title">AI Recommendation</div>
+            <div className="panel-title">
+                {recommended.tags?.name || "Hospital"}
+            </div>
+            <div className="panel-list">
+                <div className="panel-list-item">Closest hospital</div>
+                <div className="panel-list-item">Fast emergency access</div>
+                <div className="panel-list-item">Immediate assistance available</div>
+            </div>
         </div>
-
     )
 
 }
