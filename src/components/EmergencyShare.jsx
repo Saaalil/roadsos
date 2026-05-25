@@ -4,19 +4,17 @@ function EmergencyShare({ location }) {
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
     return (
-        <button onClick={sendAlert} style={{
-            background: 'white', border: '0.5px solid #E0DDD6', borderRadius: '10px',
-            padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px',
-            cursor: 'pointer', width: '100%', textAlign: 'left', marginTop: '4px'
-        }}>
-            <div style={{ width: 36, height: 36, background: '#25D366', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontSize: 20 }}>📱</span>
-            </div>
-            <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '13px', fontWeight: 600 }}>Send Emergency Alert via WhatsApp</div>
-                <div style={{ fontSize: '11px', color: '#6B6B6B', marginTop: 2 }}>Share your location with contacts instantly</div>
-            </div>
-            <span style={{ color: '#6B6B6B', fontSize: 18 }}>›</span>
+        <button onClick={sendAlert} className="panel-action" type="button">
+            <span className="panel-action-icon">
+                <i className="ti ti-brand-whatsapp"></i>
+            </span>
+            <span className="panel-action-content">
+                <span className="panel-action-title">Send Emergency Alert via WhatsApp</span>
+                <span className="panel-action-sub">Share your location with contacts instantly</span>
+            </span>
+            <span className="panel-action-arrow">
+                <i className="ti ti-chevron-right"></i>
+            </span>
         </button>
     );
 }
