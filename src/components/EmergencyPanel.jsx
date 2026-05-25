@@ -1,38 +1,37 @@
 function EmergencyPanel({ hospitals, police, repair, location }) {
     return (
-        <div>
-            <div className="emergency-banner">🚨 Emergency Mode Active — Stay Calm</div>
-            <div className="stats">
-                <div className="stat-box">
-                    <h3>🏥</h3>
-                    <p style={{ fontSize: '22px', fontFamily: "'Bebas Neue', sans-serif", color: '#1A1A1A' }}>{hospitals.length}</p>
-                    <p>Hospitals</p>
+        <div className="panel-card">
+            <div className="panel-banner">Emergency Mode Active - Stay calm</div>
+            <div className="panel-stats">
+                <div className="panel-stat">
+                    <div className="panel-stat-value">{hospitals.length}</div>
+                    <div className="panel-stat-label">Hospitals</div>
                 </div>
-                <div className="stat-box">
-                    <h3>👮</h3>
-                    <p style={{ fontSize: '22px', fontFamily: "'Bebas Neue', sans-serif", color: '#1A1A1A' }}>{police.length}</p>
-                    <p>Police</p>
+                <div className="panel-stat">
+                    <div className="panel-stat-value">{police.length}</div>
+                    <div className="panel-stat-label">Police</div>
                 </div>
-                <div className="stat-box">
-                    <h3>🔧</h3>
-                    <p style={{ fontSize: '22px', fontFamily: "'Bebas Neue', sans-serif", color: '#1A1A1A' }}>{repair.length}</p>
-                    <p>Repair</p>
+                <div className="panel-stat">
+                    <div className="panel-stat-value">{repair.length}</div>
+                    <div className="panel-stat-label">Repair</div>
                 </div>
             </div>
-            <div className="dashboard-card">
-                <h3 style={{ marginBottom: '10px', fontSize: '12px', fontWeight: 600, color: '#6B6B6B', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Emergency Numbers</h3>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #E0DDD6' }}>
-                    <span>🚑 Ambulance</span><strong style={{ color: '#C0392B', fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px' }}>108</strong>
+            <div className="panel-section">
+                <div className="panel-section-title">Emergency Numbers</div>
+                <div className="panel-list-row">
+                    <span>Ambulance</span>
+                    <strong className="panel-accent">108</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '0.5px solid #E0DDD6' }}>
-                    <span>👮 Police</span><strong style={{ color: '#1A5276', fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px' }}>100</strong>
+                <div className="panel-list-row">
+                    <span>Police</span>
+                    <strong className="panel-accent alt">100</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-                    <span>🔥 Fire</span><strong style={{ color: '#D4AC0D', fontFamily: "'Bebas Neue', sans-serif", fontSize: '18px' }}>101</strong>
+                <div className="panel-list-row">
+                    <span>Fire</span>
+                    <strong className="panel-accent warn">101</strong>
                 </div>
-                <hr style={{ margin: '10px 0', border: 'none', borderTop: '0.5px solid #E0DDD6' }} />
-                <p style={{ fontSize: '11px', color: '#6B6B6B' }}>📍 {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</p>
             </div>
+            <div className="panel-foot">Coordinates: {location.lat.toFixed(5)}, {location.lng.toFixed(5)}</div>
         </div>
     );
 }
