@@ -1,165 +1,106 @@
-# 🚑 ROADSOS
+# ROADSOS
 
-### Smart Emergency Road Assistance System
+Smart Emergency Road Assistance System
 
-ROADSOS is an AI-powered emergency assistance web application designed to help users during road accidents and emergency situations. The platform provides real-time location tracking, nearby emergency services, navigation support, and instant emergency alert sharing.
+ROADSOS is a web application for emergency road assistance. It provides real-time location tracking, nearby emergency services discovery, navigation support, and instant alert sharing to reduce response time during accidents and roadside incidents.
 
-The project focuses on improving emergency response time and helping users quickly access medical and roadside assistance.
+## Features
 
-# 🌟 Features
+- One-click SOS emergency activation
+- Live GPS location tracking with map visualization
+- Nearby hospitals, police stations, and repair shops via OpenStreetMap/Overpass
+- Nearest hospital selection with distance and ETA estimates
+- Google Maps navigation and nearby-hospital search
+- WhatsApp emergency alert sharing with live coordinates
+- Voice assistant prompts
+- Crash detection workflow with automated call/SMS support (optional backend)
 
-## 🚨 SOS Emergency Activation
+## Tech Stack
 
-* One-click SOS emergency trigger
-* Activates emergency mode instantly
+**Frontend**
+- React
+- Vite
+- JavaScript
+- CSS
 
-## 📍 Live Location Tracking
+**Maps & APIs**
+- React Leaflet
+- OpenStreetMap tiles
+- Overpass API
+- Browser Geolocation API
 
-* Detects the user’s real-time GPS location
-* Displays current position on an interactive map
+**Additional Integrations**
+- Speech Synthesis API
+- WhatsApp sharing link
 
-## 🏥 Nearby Hospitals
+## Project Structure
 
-* Finds nearby hospitals using OpenStreetMap APIs
-* Displays hospitals directly on the map
-
-## 👮 Nearby Police Stations
-
-* Detects nearby police stations for emergency support
-
-## 🔧 Nearby Repair Shops
-
-* Finds nearby vehicle repair and roadside assistance centers
-
-## 🧭 Smart Navigation
-
-* Identifies the nearest hospital
-* Provides direct Google Maps navigation
-
-## 📏 Distance & ETA Calculation
-
-* Calculates approximate distance to nearest hospital
-* Estimates travel time for faster emergency decisions
-
-## 📱 Emergency Alert Sharing
-
-* Share emergency messages instantly through WhatsApp
-* Sends live location coordinates
-
-## 🎤 Voice Assistant
-
-* Voice-enabled emergency interaction support
-
-## 🧠 AI Recommendation System
-
-* Recommends the best nearby hospital
-* Suggests fastest emergency access option
-
-## 🗺 Interactive Emergency Map
-
-* Built using React Leaflet and OpenStreetMap
-* Displays live markers for emergency services
-
-# 🛠 Tech Stack
-
-## Frontend
-
-* React.js
-* Vite
-* JavaScript
-* CSS
-
-## Maps & APIs
-
-* React Leaflet
-* OpenStreetMap
-* Overpass API
-* Browser Geolocation API
-
-## Additional Features
-
-* Speech Synthesis API
-* WhatsApp Sharing Integration
-
-# 📂 Project Structure
-
-```bash
-ROADSOS/
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── SOSButton.jsx
-│   │   │   ├── EmergencyPanel.jsx
-│   │   │   ├── VoiceAssistant.jsx
-│   │   │   ├── AccidentDetector.jsx
-│   │   │   ├── NearestHospital.jsx
-│   │   │   ├── EmergencyShare.jsx
-│   │   │   └── AIRecommendation.jsx
-│   │   │
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   │
-│   ├── package.json
-│   └── vite.config.js
-│
-└── README.md
+```text
+roadsos/
+├── index.html
+├── package.json
+├── vite.config.js
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── AIRecommendation.jsx
+│   │   ├── CrashDetectionSystem.jsx
+│   │   ├── EmergencyPanel.jsx
+│   │   ├── EmergencyShare.jsx
+│   │   ├── NearestHospital.jsx
+│   │   ├── SOSButton.jsx
+│   │   └── VoiceAssistant.jsx
+│   ├── services/
+│   │   └── overpassApi.js
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+└── roadsos-backend/
+	├── package.json
+	└── server.js
 ```
 
----
+## Installation and Setup
 
-# ⚙ Installation & Setup
-
-## 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/kashika-b-11/roadsos.git
-```
-
-## 2️⃣ Navigate to Project
-
-```bash
-cd roadsos/frontend
-```
-
-## 3️⃣ Install Dependencies
+### Frontend
 
 ```bash
 npm install
-```
-
-## 4️⃣ Run Development Server
-
-```bash
 npm run dev
 ```
 
----
+Open `http://localhost:5173` in your browser. Allow location access for live tracking.
 
-# 🌐 Deployment
+### Optional Backend (Crash Detection Call/SMS)
 
-The project is deployed using:
+The backend powers automated calls and SMS through Twilio.
 
-* Vercel
-* GitHub
+```bash
+cd roadsos-backend
+npm install
+npm run dev
+```
 
----
+Create a `.env` file in `roadsos-backend` with:
 
-# 🚀 Future Improvements
+```bash
+TWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+TWILIO_PHONE_NUMBER=your_twilio_number
+```
 
-* Real-time ambulance integration
-* AI-based accident severity prediction
-* Emergency contact management
-* Offline emergency mode
-* Traffic-aware hospital recommendations
-* Multi-language support
-* Mobile app integration
+## Deployment
 
+- Frontend: any static hosting that supports Vite builds (for example, Vercel or Netlify).
+- Backend: any Node.js hosting (for example, Render, Railway, or a VM).
 
+## Roadmap
 
----
-
-# ⭐ If you like this project
-
-Give this repository a ⭐ on GitHub!
+- Real-time ambulance integration
+- Accident severity prediction
+- Emergency contact management
+- Offline emergency mode
+- Traffic-aware routing and recommendations
+- Multi-language support
+- Mobile app integration
