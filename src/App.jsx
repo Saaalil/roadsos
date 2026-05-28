@@ -12,6 +12,17 @@ import EmergencyShare from "./components/EmergencyShare";
 import AIRecommendation from "./components/AIRecommendation";
 import CrashDetectionSystem from "./components/CrashDetectionSystem";
 
+function normalizeOverpassElement(element) {
+  const lat = element.lat ?? element.center?.lat;
+  const lon = element.lon ?? element.center?.lon;
+
+  return {
+    ...element,
+    lat,
+    lon,
+  };
+}
+
 function App() {
   const [location, setLocation] = useState({ lat: 31.082, lng: 77.176 });
   const [accuracy, setAccuracy] = useState(null);
@@ -63,17 +74,35 @@ function App() {
     const query = `
 [out:json];
 (
-node(around:10000,${lat},${lng})["amenity"];
-node(around:10000,${lat},${lng})["shop"];
+  node(around:10000,${lat},${lng})["amenity"="hospital"];
+  way(around:10000,${lat},${lng})["amenity"="hospital"];
+  relation(around:10000,${lat},${lng})["amenity"="hospital"];
+
+  node(around:10000,${lat},${lng})["amenity"="police"];
+  way(around:10000,${lat},${lng})["amenity"="police"];
+  relation(around:10000,${lat},${lng})["amenity"="police"];
+
+  node(around:10000,${lat},${lng})["shop"="car_repair"];
+  way(around:10000,${lat},${lng})["shop"="car_repair"];
+  relation(around:10000,${lat},${lng})["shop"="car_repair"];
 );
-out;
+out center;
 `;
     const response = await fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=UTF-8",
+      },
       body: query,
     });
+
+    if (!response.ok) {
+      throw new Error(`Overpass request failed with status ${response.status}`);
+    }
+
     const data = await response.json();
-    const all = data.elements || [];
+    const all = (data.elements || []).map(normalizeOverpassElement).filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon));
+
     setHospitals(all.filter(item => item.tags?.amenity === "hospital"));
     setPolice(all.filter(item => item.tags?.amenity === "police"));
     setRepair(all.filter(item => item.tags?.shop === "car_repair"));
