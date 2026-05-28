@@ -1,6 +1,18 @@
-function NearestHospital({ hospitals, location }) {
+function NearestHospital({ hospitals, location, nearbyError, hospitalSearchUrl }) {
     if (hospitals.length === 0) {
-        return <div className="panel-card panel-muted">Searching for hospitals nearby...</div>;
+        return (
+            <div className="panel-card">
+                <div className="panel-section-title">Nearest Hospital</div>
+                <div className="panel-muted">
+                    {nearbyError || "Searching for hospitals nearby..."}
+                </div>
+                <a href={hospitalSearchUrl} target="_blank" rel="noreferrer">
+                    <button className="panel-button" type="button">
+                        Open Nearby Hospitals
+                    </button>
+                </a>
+            </div>
+        );
     }
 
     let nearest = hospitals[0];

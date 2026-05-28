@@ -12,6 +12,12 @@ import EmergencyShare from "./components/EmergencyShare";
 import AIRecommendation from "./components/AIRecommendation";
 import CrashDetectionSystem from "./components/CrashDetectionSystem";
 
+const OVERPASS_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.nchc.org.tw/api/interpreter",
+];
+
 function normalizeOverpassElement(element) {
   const lat = element.lat ?? element.center?.lat;
   const lon = element.lon ?? element.center?.lon;
@@ -23,6 +29,17 @@ function normalizeOverpassElement(element) {
   };
 }
 
+function buildHospitalSearchUrl(location) {
+  const lat = Number.isFinite(location?.lat) ? location.lat : null;
+  const lng = Number.isFinite(location?.lng) ? location.lng : null;
+
+  if (lat == null || lng == null) {
+    return "https://www.google.com/maps/search/hospital";
+  }
+
+  return `https://www.google.com/maps/search/hospital/@${lat},${lng},14z`;
+}
+
 function App() {
   const [location, setLocation] = useState({ lat: 31.082, lng: 77.176 });
   const [accuracy, setAccuracy] = useState(null);
@@ -30,6 +47,7 @@ function App() {
   const [police, setPolice] = useState([]);
   const [repair, setRepair] = useState([]);
   const [emergency, setEmergency] = useState(false);
+  const [nearbyError, setNearbyError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const hasFetchedRef = useRef(false);
 
@@ -63,6 +81,7 @@ function App() {
 
     const onError = (error) => {
       console.warn("Geolocation error:", error);
+      setNearbyError("Location access is required to find nearby services.");
     };
 
     navigator.geolocation.getCurrentPosition(onPosition, onError, options);
@@ -88,34 +107,60 @@ function App() {
 );
 out center;
 `;
-    const response = await fetch("https://overpass-api.de/api/interpreter", {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=UTF-8",
-      },
-      body: query,
-    });
+    let lastError = null;
 
-    if (!response.ok) {
-      throw new Error(`Overpass request failed with status ${response.status}`);
+    for (const endpoint of OVERPASS_ENDPOINTS) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=UTF-8",
+          },
+          body: query,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Overpass request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const all = (data.elements || [])
+          .map(normalizeOverpassElement)
+          .filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon));
+
+        setHospitals(all.filter(item => item.tags?.amenity === "hospital"));
+        setPolice(all.filter(item => item.tags?.amenity === "police"));
+        setRepair(all.filter(item => item.tags?.shop === "car_repair"));
+        setNearbyError(null);
+        return;
+      } catch (error) {
+        lastError = error;
+      }
     }
 
-    const data = await response.json();
-    const all = (data.elements || []).map(normalizeOverpassElement).filter(item => Number.isFinite(item.lat) && Number.isFinite(item.lon));
-
-    setHospitals(all.filter(item => item.tags?.amenity === "hospital"));
-    setPolice(all.filter(item => item.tags?.amenity === "police"));
-    setRepair(all.filter(item => item.tags?.shop === "car_repair"));
+    console.warn("Overpass lookup failed:", lastError);
+    setNearbyError("Unable to load nearby services right now.");
   }
 
   function activateSOS() {
     setEmergency(true);
   }
 
+  function openNearbyHospitals() {
+    const url = buildHospitalSearchUrl(location);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  function handleSosClick() {
+    activateSOS();
+    openNearbyHospitals();
+  }
+
   const updatedLabel = lastUpdated
     ? lastUpdated.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
     : "just now";
   const coordsLabel = `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`;
+  const hospitalSearchUrl = buildHospitalSearchUrl(location);
 
   const userMarker = useMemo(
     () =>
@@ -237,7 +282,7 @@ out center;
                 <div className="metric-label">Mileage</div>
               </div>
               <div className="metric-center">
-                <SOSButton activateSOS={activateSOS} />
+                <SOSButton activateSOS={handleSosClick} />
               </div>
               <div className="metric-card">
                 <div className="metric-value">0.0</div>
@@ -265,7 +310,12 @@ out center;
                   location={location}
                 />
                 <AIRecommendation hospitals={hospitals} />
-                <NearestHospital hospitals={hospitals} location={location} />
+                <NearestHospital
+                  hospitals={hospitals}
+                  location={location}
+                  nearbyError={nearbyError}
+                  hospitalSearchUrl={hospitalSearchUrl}
+                />
                 <EmergencyShare location={location} />
               </>
             )}

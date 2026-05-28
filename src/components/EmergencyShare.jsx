@@ -1,10 +1,9 @@
 function EmergencyShare({ location }) {
-    function sendAlert() {
-        const msg = `🚨 EMERGENCY ALERT\n\nI need immediate assistance.\n\nLocation: https://www.google.com/maps?q=${location.lat},${location.lng}\nLat: ${location.lat.toFixed(6)}\nLng: ${location.lng.toFixed(6)}\n\nPlease call: 108 (Ambulance) | 100 (Police)`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-    }
+    const msg = `🚨 EMERGENCY ALERT\n\nI need immediate assistance.\n\nLocation: https://www.google.com/maps?q=${location.lat},${location.lng}\nLat: ${location.lat.toFixed(6)}\nLng: ${location.lng.toFixed(6)}\n\nPlease call: 108 (Ambulance) | 100 (Police)`;
+    const shareUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
     return (
-        <button onClick={sendAlert} className="panel-action" type="button">
+        <a className="panel-action" href={shareUrl} target="_blank" rel="noreferrer">
             <span className="panel-action-icon">
                 <i className="ti ti-brand-whatsapp"></i>
             </span>
@@ -15,7 +14,7 @@ function EmergencyShare({ location }) {
             <span className="panel-action-arrow">
                 <i className="ti ti-chevron-right"></i>
             </span>
-        </button>
+        </a>
     );
 }
 export default EmergencyShare;
